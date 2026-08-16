@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Multilingual Personal Medical Passport">
+<title>Medical Passport | 吳苡嫙</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Iansui&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap');
+:root{
+  --navy:#294c69;
+  --blue:#6f91ad;
+  --blue-dark:#52758f;
+  --blue-soft:#e7eef3;
+  --blue-pale:#f4f7f8;
+  --gray-50:#f3f1ed;
+  --gray-100:#ebe9e5;
+  --gray-200:#d9dde0;
+  --gray-400:#9aa6af;
+  --gray-500:#687681;
+  --gray-700:#394653;
+  --white:#fbfaf7;
+  --success:#0f766e;
+  --shadow:0 10px 30px rgba(15,23,42,.07);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+/* 文青字體：芫荽 Iansui 只用於標題與重點文字，醫療資料保持清晰易讀 */
+.logo-title,
+.hero h1,
+.section-head h2,
+.modal h3,
+.contact-name{
+  font-family:"Iansui","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  letter-spacing:.035em;
+}
+.logo-title{font-size:15px}
+.hero h1{font-size:30px;font-weight:400;letter-spacing:.06em}
+.section-head h2{font-size:20px;font-weight:400;letter-spacing:.045em}
+.contact-name{font-size:20px;font-weight:400}
+
+body{
+  margin:0;
+  background:var(--gray-50);
+  color:var(--gray-700);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",Inter,Arial,sans-serif;
+  font-size:15px;
+  line-height:1.6;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{
+  position:sticky;top:0;height:100vh;background:var(--white);
+  border-right:1px solid var(--gray-200);padding:24px 16px;
+  display:flex;flex-direction:column;z-index:10
+}
+.logo{padding:4px 10px 22px;border-bottom:1px solid var(--gray-200)}
+.logo-mark{
+  width:38px;height:38px;border-radius:11px;background:var(--blue);
+  color:white;display:grid;place-items:center;font-weight:800;margin-bottom:10px
+}
+.logo-title{font-size:14px;font-weight:800;color:var(--navy);letter-spacing:.02em}
+.logo-sub{font-size:11px;color:var(--gray-400);margin-top:2px}
+.nav{margin-top:22px;display:grid;gap:5px}
+.nav button{
+  width:100%;border:0;background:transparent;color:var(--gray-500);
+  padding:11px 12px;border-radius:10px;text-align:left;font-size:14px;
+  transition:.18s
+}
+.nav button:hover{background:var(--gray-100);color:var(--navy)}
+.nav button.active{background:var(--blue-soft);color:var(--blue);font-weight:700}
+.sidebar-bottom{margin-top:auto}
+.language-label{font-size:11px;color:var(--gray-400);margin:0 10px 8px}
+.languages select{
+  width:100%;border:1px solid var(--gray-200);background:var(--white);
+  color:var(--gray-700);border-radius:9px;padding:8px 10px;font-size:12px;
+  outline:none;cursor:pointer
+}
+.languages select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+main{min-width:0;padding:28px 42px 60px;max-width:1400px;width:100%;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.breadcrumb{font-size:13px;color:var(--gray-500)}
+.mobile-menu{display:none;border:1px solid var(--gray-200);background:white;border-radius:9px;padding:7px 10px}
+.section{display:none}.section.active{display:block}
+.hero{
+  background:linear-gradient(135deg,#294c69,#6f91ad);
+  color:white;border-radius:14px;padding:28px 30px;
+  display:flex;justify-content:space-between;gap:24px;align-items:center;
+  box-shadow:0 8px 24px rgba(41,76,105,.08)
+}
+.hero-left{display:flex;gap:18px;align-items:center}
+.avatar{
+  width:68px;height:68px;border-radius:16px;background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;
+  font-size:25px;font-weight:800
+}
+.hero h1{margin:0;font-size:28px;line-height:1.2;font-weight:800}
+.hero .english{margin-top:4px;opacity:.84;font-size:13px;letter-spacing:.045em}
+.hero-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.hero-pill{font-size:12px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:4px 10px}
+.hero-right{text-align:right;font-size:12px;opacity:.9}
+.hero-right strong{display:block;font-size:14px;opacity:1}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin:28px 0 13px}
+.section-head h2{margin:0;color:var(--navy);font-size:19px;font-weight:800}
+.section-head p{margin:2px 0 0;color:var(--gray-500);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{
+  background:var(--white);border:1px solid var(--gray-200);
+  border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(15,23,42,.035)
+}
+.status-card{display:flex;gap:12px;align-items:flex-start;min-height:108px}
+.status-icon{
+  width:38px;height:38px;border-radius:10px;background:var(--blue-soft);
+  color:var(--blue);display:grid;place-items:center;font-size:17px;flex:none
+}
+.status-card h3{margin:0;color:var(--navy);font-size:14px;font-weight:750}
+.status-card p{margin:4px 0 0;color:var(--gray-500);font-size:13px}
+.status-badge{
+  margin-left:auto;background:#ecfdf5;color:var(--success);
+  border:1px solid #ccfbf1;border-radius:5px;padding:3px 8px;font-size:11px;white-space:nowrap
+}
+.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.info-list{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.info-row{padding:12px 0;border-bottom:1px solid var(--gray-200)}
+.info-row label{display:block;color:var(--gray-500);font-size:12px;margin-bottom:2px}
+.info-row strong{font-size:14px;color:var(--gray-700);font-weight:650}
+.emergency{border-top:4px solid var(--blue)}
+.emergency .contact-name{font-size:18px;font-weight:800;color:var(--navy)}
+.emergency .phone{font-size:22px;font-weight:800;color:var(--blue);margin-top:4px;letter-spacing:.02em}
+.emergency-note{font-size:12px;color:var(--gray-500);margin-top:8px}
+.record-list{display:grid;gap:10px}
+.record{
+  background:var(--white);border:1px solid var(--gray-200);border-radius:11px;
+  padding:15px 17px;display:flex;align-items:center;justify-content:space-between;gap:15px
+}
+.record-title{font-weight:700;color:var(--navy);font-size:14px}
+.record-sub{font-size:12px;color:var(--gray-500);margin-top:2px}
+.empty{text-align:center;padding:42px 20px;color:var(--gray-500)}
+.empty-icon{width:44px;height:44px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;margin:0 auto 10px}
+.empty strong{display:block;color:var(--navy);font-size:14px;margin-bottom:3px}
+.toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px}
+.btn{border:1px solid var(--gray-200);background:white;color:var(--gray-700);border-radius:9px;padding:8px 13px;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:white}
+.btn.primary:hover{background:var(--blue-dark)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:5px}.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--gray-500);font-weight:650}
+.field input,.field textarea,.field select{
+  width:100%;border:1px solid var(--gray-200);border-radius:9px;background:white;
+  padding:9px 11px;color:var(--gray-700);outline:none
+}
+.field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.footer{text-align:center;color:var(--gray-400);font-size:11px;margin-top:45px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:30;padding:20px;place-items:center}
+.modal-bg.open{display:grid}
+.modal{width:min(620px,100%);background:white;border-radius:18px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.2)}
+.modal h3{margin:0 0 18px;color:var(--navy);font-size:19px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.toast{
+  position:fixed;right:20px;bottom:20px;background:var(--navy);color:white;
+  padding:10px 14px;border-radius:10px;font-size:13px;opacity:0;transform:translateY(10px);
+  pointer-events:none;transition:.2s;z-index:50
+}
+.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .app{display:block}.sidebar{position:sticky;height:auto;padding:13px 16px;display:block}
+  .logo{border:0;padding:0;display:flex;align-items:center;gap:10px}.logo-mark{margin:0}
+  .logo-sub{display:none}.logo-title{font-size:13px}
+  .nav{display:none;margin-top:12px}.nav.open{display:grid}.mobile-menu{display:block;position:absolute;right:16px;top:15px}
+  .sidebar-bottom{margin-top:12px}.language-label{display:none}.languages{display:block}
+  main{padding:18px 16px 45px}.hero{padding:22px;align-items:flex-start}.hero-right{display:none}
+  .grid,.info-list,.form-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}
+  .topbar{margin-bottom:17px}.section-head{margin-top:24px}
+}
+
+.dynamic-records{display:grid;gap:10px;margin-top:14px}
+.record-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--gray-200);background:var(--white);padding:14px 16px;border-radius:11px}
+.record-main{min-width:0}
+.record-title{font-weight:600;color:var(--navy);margin-bottom:3px}
+.record-meta{font-size:13px;color:var(--gray-500);line-height:1.6}
+.record-actions{display:flex;gap:7px}
+.record-actions button{border:1px solid var(--gray-200);background:var(--white);color:var(--gray-700);border-radius:8px;padding:7px 9px;cursor:pointer}
+.record-actions button:hover{border-color:var(--blue);color:var(--blue)}
+.add-record-btn{border:1px solid var(--blue);background:var(--blue-soft);color:var(--navy);border-radius:9px;padding:9px 13px;cursor:pointer;font-size:13px}
+.add-record-btn:hover{background:var(--blue);color:white}
+.empty-records{padding:18px;border:1px dashed var(--gray-200);border-radius:11px;color:var(--gray-500);text-align:center;font-size:13px}
+.record-modal{position:fixed;inset:0;background:rgba(41,76,105,.25);display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}
+.record-modal.show{display:flex}
+.record-dialog{width:min(520px,100%);background:var(--white);border:1px solid var(--gray-200);border-radius:16px;box-shadow:0 18px 55px rgba(41,76,105,.18);padding:24px}
+.record-dialog h3{margin:0 0 18px;font-family:"Iansui","Noto Sans TC",sans-serif;font-weight:400;color:var(--navy);font-size:23px}
+.record-form{display:grid;gap:12px}
+.record-form label{font-size:12px;color:var(--gray-500)}
+.record-form input,.record-form textarea,.record-form select{width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:9px;padding:10px 11px;background:#fff;color:var(--gray-700);font:inherit}
+.record-form textarea{min-height:80px;resize:vertical}
+.record-form input:focus,.record-form textarea:focus,.record-form select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.record-dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+.record-dialog-actions button{border-radius:9px;padding:9px 14px;cursor:pointer}
+.record-cancel{border:1px solid var(--gray-200);background:var(--white);color:var(--gray-700)}
+.record-save{border:1px solid var(--blue);background:var(--blue);color:white}
+@media(max-width:640px){.record-row{grid-template-columns:1fr}.record-actions{justify-content:flex-start}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div>
+    <div class="logo">
+      <div class="logo-mark">+</div>
+      <div><div class="logo-title">MEDICAL PASSPORT</div><div class="logo-sub">PERSONAL HEALTH RECORD</div></div>
+    </div>
+    <button class="mobile-menu" id="mobileMenu">☰</button>
+    <nav class="nav" id="nav">
+      <button class="active" data-page="overview">▦　<span data-i18n="overview">總覽</span></button>
+      <button data-page="personal">○　<span data-i18n="personal">個人資料</span></button>
+      <button data-page="history">♡　<span data-i18n="history">健康史</span></button>
+      <button data-page="medications">▣　<span data-i18n="medications">用藥史</span></button>
+      <button data-page="vaccines">◇　<span data-i18n="vaccines">疫苗紀錄</span></button>
+      <button data-page="tests">⌁　<span data-i18n="tests">檢查紀錄</span></button>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="language-label" data-i18n="language">語言</div>
+    <div class="languages" id="languages">
+      <select id="languageSelect" aria-label="Language">
+        <option value="zh">繁體中文</option>
+        <option value="zh-CN">简体中文</option>
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="es">Español</option>
+        <option value="it">Italiano</option>
+        <option value="pt">Português</option>
+        <option value="ru">Русский</option>
+        <option value="th">ไทย</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="nl">Nederlands</option>
+        <option value="sv">Svenska</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <div class="breadcrumb" id="pageTitle" data-i18n="overview">總覽</div>
+    <div id="today"></div>
+  </div>
+
+  <section class="section active" id="overview">
+    <div class="hero">
+      <div class="hero-left">
+        <div class="avatar">吳</div>
+        <div>
+          <h1>吳苡嫙</h1>
+          <div class="english">WU I Hsuan</div>
+          <div class="hero-meta">
+            <span class="hero-pill">2011/07/18</span>
+            <span class="hero-pill">A 型</span>
+            <span class="hero-pill">169 cm</span>
+            <span class="hero-pill">57 kg</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right"><span data-i18n="nationality">國籍</span><strong>中華民國</strong><span>台灣</span></div>
+    </div>
+
+    <div class="section-head">
+      <div><h2 data-i18n="important">重要醫療資訊</h2><p data-i18n="importantSub">就醫時可快速查看</p></div>
+    </div>
+    <div class="grid">
+      <div class="card status-card"><div class="status-icon">⚠</div><div><h3 data-i18n="allergy">過敏史</h3><p data-i18n="allergyDetail">藥物、食物、其他：無</p></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="card status-card"><div class="status-icon">♥</div><div><h3 data-i18n="disease">疾病史</h3><p data-i18n="diseaseDetail">目前無疾病史</p></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="card status-card"><div class="status-icon">Rx</div><div><h3 data-i18n="medHistory">用藥史</h3><p data-i18n="medDetail">目前及過去用藥：無</p></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="card status-card"><div class="status-icon">⌂</div><div><h3 data-i18n="surgery">手術／住院史</h3><p data-i18n="surgeryDetail">沒有手術，也沒有住院</p></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="card status-card"><div class="status-icon">F</div><div><h3 data-i18n="family">家族病史</h3><p data-i18n="familyDetail">目前無家族病史</p></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="card status-card"><div class="status-icon">＋</div><div><h3 data-i18n="hospital">住院史</h3><p data-i18n="hospitalDetail">目前沒有住院紀錄</p></div><span class="status-badge" data-i18n="none">無</span></div>
+    </div>
+
+    <div class="section-head"><div><h2 data-i18n="personalSnapshot">個人資料</h2><p data-i18n="personalSnapshotSub">基本身分與聯絡資訊</p></div></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="info-list">
+          <div class="info-row"><label data-i18n="name">姓名</label><strong>吳苡嫙</strong></div>
+          <div class="info-row"><label>English Name</label><strong>WU I Hsuan</strong></div>
+          <div class="info-row"><label data-i18n="birth">出生日期</label><strong>2011/07/18</strong></div>
+          <div class="info-row"><label data-i18n="blood">血型</label><strong>A</strong></div>
+          <div class="info-row"><label data-i18n="height">身高</label><strong>169 cm</strong></div>
+          <div class="info-row"><label data-i18n="weight">體重</label><strong>57 kg</strong></div>
+          <div class="info-row"><label data-i18n="nationality">國籍</label><strong>中華民國</strong></div>
+          <div class="info-row"><label data-i18n="location">居住地區</label><strong>台灣</strong></div>
+        </div>
+      </div>
+      <div class="card emergency">
+        <div class="section-head" style="margin:0 0 16px"><div><h2 data-i18n="emergency">緊急聯絡</h2><p data-i18n="emergencySub">需要協助時使用</p></div></div>
+        <div class="contact-name">媽媽</div>
+        <div class="phone">0972 015 468</div>
+        <div class="emergency-note" data-i18n="emergencyNote">請在緊急情況下聯絡此人。</div>
+      </div>
+    </div>
+
+    <div class="section-head"><div><h2 data-i18n="additional">其他醫療資料</h2><p data-i18n="additionalSub">目前尚未建立的紀錄</p></div></div>
+    <div class="grid">
+      <div class="card empty"><div><div class="empty-icon">💉</div><strong data-i18n="vaccineEmpty">尚未填寫疫苗紀錄</strong><span data-i18n="addLater">之後可以新增</span></div></div>
+      <div class="card empty"><div><div class="empty-icon">⌁</div><strong data-i18n="testEmpty">尚未填寫重要檢查</strong><span data-i18n="addLater">之後可以新增</span></div></div>
+      <div class="card empty"><div><div class="empty-icon">▤</div><strong data-i18n="docEmpty">尚未加入醫療文件</strong><span data-i18n="addLater">之後可以新增</span></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="personal">
+    <div class="section-head"><div><h2 data-i18n="personal">個人資料</h2><p data-i18n="personalSub">Personal Information</p></div><button class="btn primary" id="openEdit" data-i18n="edit">編輯資料</button></div>
+    <div class="card">
+      <div class="form-grid">
+        <div class="field"><label data-i18n="name">姓名</label><input id="nameInput" value="吳苡嫙"></div>
+        <div class="field"><label>English Name</label><input id="englishInput" value="WU I Hsuan"></div>
+        <div class="field"><label data-i18n="birth">出生日期</label><input id="dobInput" type="date" value="2011-07-18"></div>
+        <div class="field"><label data-i18n="blood">血型</label><input id="bloodInput" value="A"></div>
+        <div class="field"><label data-i18n="height">身高</label><input id="heightInput" value="169 cm"></div>
+        <div class="field"><label data-i18n="weight">體重</label><input id="weightInput" value="57 kg"></div>
+        <div class="field"><label data-i18n="nationality">國籍</label><input id="nationalityInput" value="中華民國"></div>
+        <div class="field"><label data-i18n="location">居住地區</label><input id="locationInput" value="台灣"></div>
+        <div class="field"><label data-i18n="emergencyPerson">緊急聯絡人</label><input id="emergencyNameInput" value="媽媽"></div>
+        <div class="field"><label data-i18n="emergencyPhone">緊急聯絡電話</label><input id="emergencyPhoneInput" value="0972015468"></div>
+        <div class="field full"><label data-i18n="notes">其他備註</label><textarea id="notesInput" placeholder="可填寫需要醫療人員知道的其他資訊"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="history">
+    <div class="section-head"><div><h2 data-i18n="history">健康史</h2><p data-i18n="historySub">Medical & Family History</p></div></div>
+    <div class="record-list">
+      <div class="record"><div><div class="record-title" data-i18n="disease">疾病史</div><div class="record-sub" data-i18n="diseaseDetail">目前無疾病史</div></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="record"><div><div class="record-title" data-i18n="allergy">過敏史</div><div class="record-sub" data-i18n="allergyDetail">藥物、食物、其他：無</div></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="record"><div><div class="record-title" data-i18n="surgery">手術史</div><div class="record-sub" data-i18n="surgeryDetail">沒有手術</div></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="record"><div><div class="record-title" data-i18n="hospital">住院史</div><div class="record-sub" data-i18n="hospitalDetail">目前沒有住院紀錄</div></div><span class="status-badge" data-i18n="none">無</span></div>
+      <div class="record"><div><div class="record-title" data-i18n="family">家族病史</div><div class="record-sub" data-i18n="familyDetail">目前無家族病史</div></div><span class="status-badge" data-i18n="none">無</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="medications">
+    <div class="section-head"><div><h2 data-i18n="medications">用藥史</h2><p data-i18n="medSub">Medication History</p></div></div>
+    <div class="card empty"><div><div class="empty-icon">Rx</div><strong data-i18n="medEmpty">沒有用藥紀錄</strong><span data-i18n="medEmptySub">目前無固定用藥，也無過去用藥史</span></div></div>
+  </section>
+
+  <section class="section" id="vaccines">
+    <div class="section-head"><div><h2 data-i18n="vaccines">疫苗紀錄</h2><p data-i18n="vaccineSub">Vaccination Record</p></div></div>
+    <div class="card empty"><div><div class="empty-icon">💉</div><strong data-i18n="vaccineEmpty">尚未填寫疫苗紀錄</strong><span data-i18n="addLater">之後可以新增</span></div></div>
+  </section>
+
+  <section class="section" id="tests">
+    <div class="section-head"><div><h2 data-i18n="tests">檢查紀錄</h2><p data-i18n="testSub">Important Examinations</p></div></div>
+    <div class="card empty"><div><div class="empty-icon">⌁</div><strong data-i18n="testEmpty">尚未填寫重要檢查</strong><span data-i18n="addLater">之後可以新增</span></div></div>
+  </section>
+
+  <div class="footer" data-i18n="footer">個人醫療護照 · 靜態網站 · 資料儲存在本機瀏覽器</div>
+
+<section class="card dynamic-record-section" data-record-section="vaccines">
+  <div class="section-head"><div><h2 data-i18n="vaccineSub">疫苗紀錄</h2><div class="section-sub" data-i18n="vaccineSub">疫苗接種資料</div></div><button class="add-record-btn" data-add-record="vaccines">＋ <span data-i18n="add">新增</span></button></div>
+  <div class="dynamic-records" id="records-vaccines"></div>
+</section>
+<section class="card dynamic-record-section" data-record-section="tests">
+  <div class="section-head"><div><h2 data-i18n="testSub">重要檢查</h2><div class="section-sub" data-i18n="testSub">重要檢查／檢驗</div></div><button class="add-record-btn" data-add-record="tests">＋ <span data-i18n="add">新增</span></button></div>
+  <div class="dynamic-records" id="records-tests"></div>
+</section>
+<section class="card dynamic-record-section" data-record-section="notes">
+  <div class="section-head"><div><h2 data-i18n="notes">其他備註</h2><div class="section-sub" data-i18n="additionalSub">其他醫療資料</div></div><button class="add-record-btn" data-add-record="notes">＋ <span data-i18n="add">新增</span></button></div>
+  <div class="dynamic-records" id="records-notes"></div>
+</section>
+
+</main>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 data-i18n="editTitle">編輯個人資料</h3>
+    <div class="form-grid">
+      <div class="field"><label data-i18n="name">姓名</label><input id="mName"></div>
+      <div class="field"><label>English Name</label><input id="mEnglish"></div>
+      <div class="field"><label data-i18n="height">身高</label><input id="mHeight"></div>
+      <div class="field"><label data-i18n="weight">體重</label><input id="mWeight"></div>
+      <div class="field"><label data-i18n="nationality">國籍</label><input id="mNationality"></div>
+      <div class="field"><label data-i18n="location">居住地區</label><input id="mLocation"></div>
+      <div class="field"><label data-i18n="emergencyPerson">緊急聯絡人</label><input id="mEmergencyName"></div>
+      <div class="field"><label data-i18n="emergencyPhone">緊急聯絡電話</label><input id="mEmergencyPhone"></div>
+    </div>
+    <div class="modal-actions"><button class="btn" id="closeModal" data-i18n="cancel">取消</button><button class="btn primary" id="saveProfile" data-i18n="save">儲存</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const T={
+zh:{
+overview:"總覽",personal:"個人資料",history:"健康史",medications:"用藥史",vaccines:"疫苗紀錄",tests:"檢查紀錄",language:"語言",
+important:"重要醫療資訊",importantSub:"就醫時可快速查看",allergy:"過敏史",allergyDetail:"藥物、食物、其他：無",
+disease:"疾病史",diseaseDetail:"目前無疾病史",medHistory:"用藥史",medDetail:"目前及過去用藥：無",
+surgery:"手術／住院史",surgeryDetail:"沒有手術，也沒有住院",family:"家族病史",familyDetail:"目前無家族病史",
+hospital:"住院史",hospitalDetail:"目前沒有住院紀錄",none:"無",personalSnapshot:"個人資料",personalSnapshotSub:"基本身分與聯絡資訊",
+name:"姓名",birth:"出生日期",blood:"血型",height:"身高",weight:"體重",nationality:"國籍",location:"居住地區",
+emergency:"緊急聯絡",emergencySub:"需要協助時使用",emergencyNote:"請在緊急情況下聯絡此人。",
+additional:"其他醫療資料",additionalSub:"目前尚未建立的紀錄",vaccineEmpty:"尚未填寫疫苗紀錄",testEmpty:"尚未填寫重要檢查",docEmpty:"尚未加入醫療文件",addLater:"之後可以新增",
+personalSub:"個人基本資料",edit:"編輯資料",emergencyPerson:"緊急聯絡人",emergencyPhone:"緊急聯絡電話",notes:"其他備註",
+historySub:"疾病、過敏、手術、住院與家族史",medSub:"Medication History",medEmpty:"沒有用藥紀錄",medEmptySub:"目前無固定用藥，也無過去用藥史",
+vaccineSub:"Vaccination Record",testSub:"Important Examinations",editTitle:"編輯個人資料",cancel:"取消",save:"儲存",
+footer:"個人醫療護照 · 靜態網站 · 資料儲存在本機瀏覽器"
+},
+en:{
+overview:"Overview",personal:"Personal",history:"Health History",medications:"Medications",vaccines:"Vaccinations",tests:"Examinations",language:"Language",
+important:"Important Medical Information",importantSub:"Quick reference for medical visits",allergy:"Allergies",allergyDetail:"Drug, food and other allergies: None",
+disease:"Medical History",diseaseDetail:"No known medical history",medHistory:"Medication History",medDetail:"Current and previous medication: None",
+surgery:"Surgery / Hospitalization",surgeryDetail:"No surgery and no hospitalization",family:"Family History",familyDetail:"No family history recorded",
+hospital:"Hospitalization History",hospitalDetail:"No hospitalization record",none:"None",personalSnapshot:"Personal Information",personalSnapshotSub:"Identity and contact information",
+name:"Name",birth:"Date of Birth",blood:"Blood Type",height:"Height",weight:"Weight",nationality:"Nationality",location:"Location",
+emergency:"Emergency Contact",emergencySub:"For urgent situations",emergencyNote:"Contact this person in an emergency.",
+additional:"Additional Medical Data",additionalSub:"Records not entered yet",vaccineEmpty:"No vaccination records yet",testEmpty:"No important examinations yet",docEmpty:"No medical documents added",addLater:"Can be added later",
+personalSub:"Personal Information",edit:"Edit",emergencyPerson:"Emergency Contact",emergencyPhone:"Emergency Phone",notes:"Additional Notes",
+historySub:"Medical, allergy, surgery, hospitalization and family history",medSub:"Medication History",medEmpty:"No medication records",medEmptySub:"No current or previous medication history",
+vaccineSub:"Vaccination Record",testSub:"Important Examinations",editTitle:"Edit Personal Information",cancel:"Cancel",save:"Save",
+footer:"Personal Medical Passport · Static Website · Data stored in this browser"
+},
+ja:{
+overview:"総覧",personal:"個人情報",history:"健康歴",medications:"服薬歴",vaccines:"予防接種",tests:"検査記録",language:"言語",
+important:"重要な医療情報",importantSub:"受診時にすぐ確認できます",allergy:"アレルギー歴",allergyDetail:"薬・食物・その他：なし",
+disease:"既往歴",diseaseDetail:"既知の病歴なし",medHistory:"服薬歴",medDetail:"現在・過去の服薬：なし",
+surgery:"手術／入院歴",surgeryDetail:"手術・入院歴なし",family:"家族歴",familyDetail:"家族歴なし",
+hospital:"入院歴",hospitalDetail:"入院記録なし",none:"なし",personalSnapshot:"個人情報",personalSnapshotSub:"基本情報と連絡先",
+name:"氏名",birth:"生年月日",blood:"血液型",height:"身長",weight:"体重",nationality:"国籍",location:"居住地",
+emergency:"緊急連絡先",emergencySub:"緊急時に使用",emergencyNote:"緊急時はこの連絡先にご連絡ください。",
+additional:"その他の医療情報",additionalSub:"まだ登録されていない記録",vaccineEmpty:"予防接種記録は未入力",testEmpty:"重要な検査記録は未入力",docEmpty:"医療書類は未登録",addLater:"後から追加できます",
+personalSub:"個人基本情報",edit:"編集",emergencyPerson:"緊急連絡先",emergencyPhone:"緊急電話",notes:"その他のメモ",
+historySub:"病歴・アレルギー・手術・入院・家族歴",medSub:"服薬記録",medEmpty:"服薬記録なし",medEmptySub:"現在・過去の服薬歴はありません",
+vaccineSub:"予防接種記録",testSub:"重要な検査",editTitle:"個人情報を編集",cancel:"キャンセル",save:"保存",
+footer:"個人医療パスポート · 静的ウェブサイト · データはこのブラウザに保存されます"
+},
+ko:{
+overview:"개요",personal:"개인 정보",history:"건강 기록",medications:"복약 기록",vaccines:"예방접종",tests:"검사 기록",language:"언어",
+important:"중요 의료 정보",importantSub:"진료 시 빠르게 확인할 수 있습니다",allergy:"알레르기",allergyDetail:"약물·음식·기타: 없음",
+disease:"질병력",diseaseDetail:"알려진 질병력 없음",medHistory:"복약 기록",medDetail:"현재 및 과거 복약: 없음",
+surgery:"수술 / 입원력",surgeryDetail:"수술 및 입원 기록 없음",family:"가족력",familyDetail:"가족력 기록 없음",
+hospital:"입원력",hospitalDetail:"입원 기록 없음",none:"없음",personalSnapshot:"개인 정보",personalSnapshotSub:"기본 신상 및 연락처",
+name:"이름",birth:"생년월일",blood:"혈액형",height:"키",weight:"체중",nationality:"국적",location:"거주 지역",
+emergency:"긴급 연락처",emergencySub:"긴급 상황에서 사용",emergencyNote:"긴급 상황에서는 이 연락처로 연락해 주세요.",
+additional:"기타 의료 정보",additionalSub:"아직 등록되지 않은 기록",vaccineEmpty:"예방접종 기록이 없습니다",testEmpty:"중요 검사 기록이 없습니다",docEmpty:"의료 문서가 없습니다",addLater:"나중에 추가할 수 있습니다",
+personalSub:"개인 기본 정보",edit:"편집",emergencyPerson:"긴급 연락처",emergencyPhone:"긴급 전화",notes:"추가 메모",
+historySub:"질병·알레르기·수술·입원·가족력",medSub:"복약 기록",medEmpty:"복약 기록 없음",medEmptySub:"현재 및 과거 복약 기록이 없습니다",
+vaccineSub:"예방접종 기록",testSub:"중요 검사",editTitle:"개인 정보 편집",cancel:"취소",save:"저장",
+footer:"개인 의료 패스포트 · 정적 웹사이트 · 데이터는 이 브라우저에 저장됩니다"
+}
+};
+
+// Additional interface languages. Core medical labels are localized below.
+const extra={
+"zh-CN":{overview:"总览",personal:"个人资料",history:"健康史",medications:"用药史",vaccines:"疫苗记录",tests:"检查记录",language:"语言",important:"重要医疗信息",importantSub:"就医时可快速查看",allergy:"过敏史",allergyDetail:"药物、食物、其他：无",disease:"疾病史",diseaseDetail:"目前无疾病史",medHistory:"用药史",medDetail:"目前及过去用药：无",surgery:"手术／住院史",surgeryDetail:"没有手术，也没有住院",family:"家族病史",familyDetail:"目前无家族病史",hospital:"住院史",hospitalDetail:"目前没有住院记录",none:"无",personalSnapshot:"个人资料",personalSnapshotSub:"基本身份与联系信息",name:"姓名",birth:"出生日期",blood:"血型",height:"身高",weight:"体重",nationality:"国籍",location:"居住地区",emergency:"紧急联系人",emergencySub:"需要帮助时使用",emergencyNote:"请在紧急情况下联系此人。",additional:"其他医疗资料",additionalSub:"目前尚未建立的记录",vaccineEmpty:"尚未填写疫苗记录",testEmpty:"尚未填写重要检查",docEmpty:"尚未加入医疗文件",addLater:"之后可以新增",personalSub:"个人基本资料",edit:"编辑资料",emergencyPerson:"紧急联系人",emergencyPhone:"紧急联系电话",notes:"其他备注",historySub:"疾病、过敏、手术、住院与家族史",medSub:"用药记录",medEmpty:"没有用药记录",medEmptySub:"目前无固定用药，也无过去用药史",vaccineSub:"疫苗记录",testSub:"重要检查",editTitle:"编辑个人资料",cancel:"取消",save:"保存",footer:"个人医疗护照 · 静态网站 · 数据储存在本地浏览器"},
+fr:{overview:"Vue d’ensemble",personal:"Informations personnelles",history:"Antécédents",medications:"Médicaments",vaccines:"Vaccinations",tests:"Examens",language:"Langue",important:"Informations médicales importantes",importantSub:"À consulter rapidement lors d’une visite",allergy:"Allergies",allergyDetail:"Médicaments, aliments et autres : aucune",disease:"Antécédents médicaux",diseaseDetail:"Aucun antécédent connu",medHistory:"Antécédents médicamenteux",medDetail:"Traitement actuel et antérieur : aucun",surgery:"Chirurgie / hospitalisation",surgeryDetail:"Aucune chirurgie ni hospitalisation",family:"Antécédents familiaux",familyDetail:"Aucun antécédent familial enregistré",hospital:"Hospitalisations",hospitalDetail:"Aucune hospitalisation",none:"Aucun",personalSnapshot:"Informations personnelles",personalSnapshotSub:"Identité et coordonnées",name:"Nom",birth:"Date de naissance",blood:"Groupe sanguin",height:"Taille",weight:"Poids",nationality:"Nationalité",location:"Lieu de résidence",emergency:"Contact d’urgence",emergencySub:"En cas d’urgence",emergencyNote:"Contacter cette personne en cas d’urgence.",additional:"Autres données médicales",additionalSub:"Données non encore renseignées",vaccineEmpty:"Aucun vaccin enregistré",testEmpty:"Aucun examen important enregistré",docEmpty:"Aucun document médical",addLater:"Peut être ajouté plus tard",personalSub:"Informations personnelles",edit:"Modifier",emergencyPerson:"Contact d’urgence",emergencyPhone:"Téléphone d’urgence",notes:"Notes supplémentaires",historySub:"Antécédents médicaux, allergies, chirurgie, hospitalisation et famille",medSub:"Historique des médicaments",medEmpty:"Aucun médicament enregistré",medEmptySub:"Aucun traitement actuel ou antérieur",vaccineSub:"Carnet de vaccination",testSub:"Examens importants",editTitle:"Modifier les informations",cancel:"Annuler",save:"Enregistrer",footer:"Passeport médical personnel · Site statique · Données stockées dans ce navigateur"},
+de:{overview:"Übersicht",personal:"Persönliche Daten",history:"Gesundheitsgeschichte",medications:"Medikamente",vaccines:"Impfungen",tests:"Untersuchungen",language:"Sprache",important:"Wichtige medizinische Informationen",importantSub:"Schnell bei Arztbesuchen einsehbar",allergy:"Allergien",allergyDetail:"Medikamente, Lebensmittel und sonstige: keine",disease:"Krankengeschichte",diseaseDetail:"Keine bekannte Krankengeschichte",medHistory:"Medikamentengeschichte",medDetail:"Aktuelle und frühere Medikamente: keine",surgery:"Operationen / Krankenhausaufenthalte",surgeryDetail:"Keine Operationen und keine Krankenhausaufenthalte",family:"Familiengeschichte",familyDetail:"Keine Familienanamnese eingetragen",hospital:"Krankenhausaufenthalte",hospitalDetail:"Keine Krankenhausaufenthalte",none:"Keine",personalSnapshot:"Persönliche Daten",personalSnapshotSub:"Identität und Kontakt",name:"Name",birth:"Geburtsdatum",blood:"Blutgruppe",height:"Größe",weight:"Gewicht",nationality:"Nationalität",location:"Wohnort",emergency:"Notfallkontakt",emergencySub:"Für Notfälle",emergencyNote:"Im Notfall diese Person kontaktieren.",additional:"Weitere medizinische Daten",additionalSub:"Noch nicht eingetragene Daten",vaccineEmpty:"Keine Impfdaten",testEmpty:"Keine wichtigen Untersuchungen",docEmpty:"Keine medizinischen Dokumente",addLater:"Kann später hinzugefügt werden",personalSub:"Persönliche Daten",edit:"Bearbeiten",emergencyPerson:"Notfallkontakt",emergencyPhone:"Notfalltelefon",notes:"Zusätzliche Notizen",historySub:"Krankheiten, Allergien, Operationen, Krankenhaus und Familie",medSub:"Medikamentenverlauf",medEmpty:"Keine Medikamentendaten",medEmptySub:"Keine aktuellen oder früheren Medikamente",vaccineSub:"Impfpass",testSub:"Wichtige Untersuchungen",editTitle:"Persönliche Daten bearbeiten",cancel:"Abbrechen",save:"Speichern",footer:"Persönlicher medizinischer Pass · Statische Website · Daten werden in diesem Browser gespeichert"},
+es:{overview:"Resumen",personal:"Datos personales",history:"Historial de salud",medications:"Medicamentos",vaccines:"Vacunas",tests:"Exámenes",language:"Idioma",important:"Información médica importante",importantSub:"Consulta rápida durante una visita médica",allergy:"Alergias",allergyDetail:"Medicamentos, alimentos y otras: ninguna",disease:"Antecedentes médicos",diseaseDetail:"Sin antecedentes médicos conocidos",medHistory:"Historial de medicamentos",medDetail:"Medicamentos actuales y anteriores: ninguno",surgery:"Cirugía / hospitalización",surgeryDetail:"Sin cirugías ni hospitalizaciones",family:"Antecedentes familiares",familyDetail:"Sin antecedentes familiares registrados",hospital:"Hospitalizaciones",hospitalDetail:"Sin hospitalizaciones",none:"Ninguno",personalSnapshot:"Datos personales",personalSnapshotSub:"Identidad y contacto",name:"Nombre",birth:"Fecha de nacimiento",blood:"Grupo sanguíneo",height:"Altura",weight:"Peso",nationality:"Nacionalidad",location:"Residencia",emergency:"Contacto de emergencia",emergencySub:"Para situaciones urgentes",emergencyNote:"Contacta a esta persona en caso de emergencia.",additional:"Otros datos médicos",additionalSub:"Registros aún no introducidos",vaccineEmpty:"No hay vacunas registradas",testEmpty:"No hay exámenes importantes",docEmpty:"No hay documentos médicos",addLater:"Se pueden añadir después",personalSub:"Datos personales",edit:"Editar",emergencyPerson:"Contacto de emergencia",emergencyPhone:"Teléfono de emergencia",notes:"Notas adicionales",historySub:"Enfermedades, alergias, cirugías, hospitalizaciones y antecedentes familiares",medSub:"Historial de medicamentos",medEmpty:"Sin registros de medicamentos",medEmptySub:"Sin medicación actual ni anterior",vaccineSub:"Registro de vacunación",testSub:"Exámenes importantes",editTitle:"Editar datos personales",cancel:"Cancelar",save:"Guardar",footer:"Pasaporte médico personal · Sitio estático · Datos almacenados en este navegador"},
+it:{overview:"Panoramica",personal:"Dati personali",history:"Anamnesi",medications:"Farmaci",vaccines:"Vaccinazioni",tests:"Esami",language:"Lingua",important:"Informazioni mediche importanti",importantSub:"Consultazione rapida durante una visita",allergy:"Allergie",allergyDetail:"Farmaci, alimenti e altre: nessuna",disease:"Anamnesi medica",diseaseDetail:"Nessuna anamnesi nota",medHistory:"Anamnesi farmacologica",medDetail:"Farmaci attuali e precedenti: nessuno",surgery:"Interventi / ricoveri",surgeryDetail:"Nessun intervento né ricovero",family:"Anamnesi familiare",familyDetail:"Nessuna anamnesi familiare registrata",hospital:"Ricoveri",hospitalDetail:"Nessun ricovero",none:"Nessuno",personalSnapshot:"Dati personali",personalSnapshotSub:"Identità e contatti",name:"Nome",birth:"Data di nascita",blood:"Gruppo sanguigno",height:"Altezza",weight:"Peso",nationality:"Nazionalità",location:"Residenza",emergency:"Contatto di emergenza",emergencySub:"Per situazioni urgenti",emergencyNote:"Contattare questa persona in caso di emergenza.",additional:"Altri dati medici",additionalSub:"Dati non ancora inseriti",vaccineEmpty:"Nessuna vaccinazione registrata",testEmpty:"Nessun esame importante",docEmpty:"Nessun documento medico",addLater:"Può essere aggiunto in seguito",personalSub:"Dati personali",edit:"Modifica",emergencyPerson:"Contatto di emergenza",emergencyPhone:"Telefono di emergenza",notes:"Note aggiuntive",historySub:"Malattie, allergie, interventi, ricoveri e anamnesi familiare",medSub:"Storia dei farmaci",medEmpty:"Nessun farmaco registrato",medEmptySub:"Nessuna terapia attuale o precedente",vaccineSub:"Registro vaccinazioni",testSub:"Esami importanti",editTitle:"Modifica dati personali",cancel:"Annulla",save:"Salva",footer:"Passaporto medico personale · Sito statico · Dati salvati nel browser"},
+pt:{overview:"Visão geral",personal:"Dados pessoais",history:"Histórico de saúde",medications:"Medicamentos",vaccines:"Vacinação",tests:"Exames",language:"Idioma",important:"Informações médicas importantes",importantSub:"Consulta rápida durante atendimento",allergy:"Alergias",allergyDetail:"Medicamentos, alimentos e outras: nenhuma",disease:"Histórico médico",diseaseDetail:"Nenhum histórico conhecido",medHistory:"Histórico de medicamentos",medDetail:"Medicamentos atuais e anteriores: nenhum",surgery:"Cirurgia / internação",surgeryDetail:"Sem cirurgias ou internações",family:"Histórico familiar",familyDetail:"Nenhum histórico familiar registrado",hospital:"Internações",hospitalDetail:"Nenhuma internação",none:"Nenhum",personalSnapshot:"Dados pessoais",personalSnapshotSub:"Identidade e contato",name:"Nome",birth:"Data de nascimento",blood:"Tipo sanguíneo",height:"Altura",weight:"Peso",nationality:"Nacionalidade",location:"Residência",emergency:"Contato de emergência",emergencySub:"Para situações urgentes",emergencyNote:"Entre em contato com esta pessoa em caso de emergência.",additional:"Outros dados médicos",additionalSub:"Registros ainda não preenchidos",vaccineEmpty:"Nenhum registro de vacinação",testEmpty:"Nenhum exame importante",docEmpty:"Nenhum documento médico",addLater:"Pode ser adicionado depois",personalSub:"Dados pessoais",edit:"Editar",emergencyPerson:"Contato de emergência",emergencyPhone:"Telefone de emergência",notes:"Notas adicionais",historySub:"Doenças, alergias, cirurgias, internações e histórico familiar",medSub:"Histórico de medicamentos",medEmpty:"Nenhum registro de medicamentos",medEmptySub:"Sem medicamentos atuais ou anteriores",vaccineSub:"Registro de vacinação",testSub:"Exames importantes",editTitle:"Editar dados pessoais",cancel:"Cancelar",save:"Salvar",footer:"Passaporte médico pessoal · Site estático · Dados armazenados neste navegador"}
+};
+Object.keys(extra).forEach(k=>T[k]=extra[k]);
+
+// For remaining requested languages, use English UI terms as a safe fallback rather than
+// displaying mixed labels. The selected language name remains native in the selector.
+["ru","th","vi","id","ms","nl","sv","tr","ar"].forEach(k=>T[k]=T.en);
+
+T.zh.add="新增";T.zh.editRecord="編輯";T.zh.deleteRecord="刪除";T.zh.recordName="名稱";T.zh.recordDate="日期";T.zh.recordDose="劑次";T.zh.recordNote="備註";T.zh.recordSave="儲存";T.zh.recordCancel="取消";T.zh.addVaccine="新增疫苗";T.zh.addTest="新增檢查";T.zh.addNote="新增備註";T.zh.noRecords="目前沒有資料";
+T.en.add="Add";T.en.editRecord="Edit";T.en.deleteRecord="Delete";T.en.recordName="Name";T.en.recordDate="Date";T.en.recordDose="Dose";T.en.recordNote="Note";T.en.recordSave="Save";T.en.recordCancel="Cancel";T.en.addVaccine="Add vaccine";T.en.addTest="Add test";T.en.addNote="Add note";T.en.noRecords="No records yet";
+T.ja={...T.en,add:"追加",editRecord:"編集",deleteRecord:"削除",recordName:"名称",recordDate:"日付",recordDose:"回数",recordNote:"メモ",recordSave:"保存",recordCancel:"キャンセル",addVaccine:"ワクチンを追加",addTest:"検査を追加",addNote:"メモを追加",noRecords:"まだ記録がありません"};
+T.ko={...T.en,add:"추가",editRecord:"수정",deleteRecord:"삭제",recordName:"이름",recordDate:"날짜",recordDose:"접종 횟수",recordNote:"메모",recordSave:"저장",recordCancel:"취소",addVaccine:"백신 추가",addTest:"검사 추가",addNote:"메모 추가",noRecords:"아직 기록이 없습니다"};
+["zh-CN","fr","de","es","it","pt","ru","th","vi","id","ms","nl","sv","tr","ar"].forEach(k=>{T[k]=T[k]||T.en;Object.assign(T[k],{add:T[k].add||T.en.add,editRecord:T[k].editRecord||T.en.editRecord,deleteRecord:T[k].deleteRecord||T.en.deleteRecord,recordName:T[k].recordName||T.en.recordName,recordDate:T[k].recordDate||T.en.recordDate,recordDose:T[k].recordDose||T.en.recordDose,recordNote:T[k].recordNote||T.en.recordNote,recordSave:T[k].recordSave||T.en.recordSave,recordCancel:T[k].recordCancel||T.en.recordCancel,addVaccine:T[k].addVaccine||T.en.addVaccine,addTest:T[k].addTest||T.en.addTest,addNote:T[k].addNote||T.en.addNote,noRecords:T[k].noRecords||T.en.noRecords});});
+
+let lang=localStorage.getItem("medical-passport-language")||"zh";
+let data=JSON.parse(localStorage.getItem("medical-passport-profile")||"null")||{
+name:"吳苡嫙",english:"WU I Hsuan",dob:"2011-07-18",blood:"A",height:"169 cm",weight:"57 kg",
+nationality:"中華民國",location:"台灣",emergencyName:"媽媽",emergencyPhone:"0972015468",notes:""
+};
+
+function tr(k){return T[lang][k]||T.zh[k]||k}
+function applyLanguage(){
+  document.documentElement.lang=lang==="zh"?"zh-Hant":lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=tr(el.dataset.i18n));
+  document.getElementById("languageSelect").value=lang;
+  document.getElementById("today").textContent=new Date().toLocaleDateString(
+    lang==="zh"?"zh-TW":lang==="ja"?"ja-JP":lang==="ko"?"ko-KR":"en-US",
+    {year:"numeric",month:"long",day:"numeric"}
+  );
+}
+function showPage(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  document.getElementById("pageTitle").textContent=tr(id==="overview"?"overview":id);
+  document.querySelector(".nav").classList.remove("open");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function populate(){
+  const map={name:"nameInput",english:"englishInput",dob:"dobInput",blood:"bloodInput",height:"heightInput",weight:"weightInput",nationality:"nationalityInput",location:"locationInput",emergencyName:"emergencyNameInput",emergencyPhone:"emergencyPhoneInput",notes:"notesInput"};
+  Object.entries(map).forEach(([k,id])=>{if(document.getElementById(id))document.getElementById(id).value=data[k]||""});
+}
+function openEdit(){
+  const keys={name:"mName",english:"mEnglish",height:"mHeight",weight:"mWeight",nationality:"mNationality",location:"mLocation",emergencyName:"mEmergencyName",emergencyPhone:"mEmergencyPhone"};
+  Object.entries(keys).forEach(([k,id])=>document.getElementById(id).value=data[k]||"");
+  document.getElementById("modal").classList.add("open");
+}
+function save(){
+  const keys={name:"mName",english:"mEnglish",height:"mHeight",weight:"mWeight",nationality:"mNationality",location:"mLocation",emergencyName:"mEmergencyName",emergencyPhone:"mEmergencyPhone"};
+  Object.entries(keys).forEach(([k,id])=>data[k]=document.getElementById(id).value.trim());
+  localStorage.setItem("medical-passport-profile",JSON.stringify(data));
+  render();document.getElementById("modal").classList.remove("open");toast(tr("save")+" ✓");
+}
+function render(){
+  document.querySelector(".hero h1").textContent=data.name;
+  document.querySelector(".hero .english").textContent=data.english;
+  const pills=document.querySelectorAll(".hero-pill");
+  pills[0].textContent=data.dob.replaceAll("-","/");
+  pills[1].textContent=data.blood+(lang==="zh"?" 型":lang==="ja"?" 型":lang==="ko"?"형":"");
+  pills[2].textContent=data.height;pills[3].textContent=data.weight;
+  document.querySelector(".hero-right strong").textContent=data.nationality;
+  document.querySelector(".hero-right span:last-child").textContent=data.location;
+  const emergency=document.querySelector(".emergency");
+  emergency.querySelector(".contact-name").textContent=data.emergencyName;
+  emergency.querySelector(".phone").textContent=data.emergencyPhone;
+  populate();
+}
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1800);
+}
+
+document.getElementById("nav").addEventListener("click",e=>{
+  const b=e.target.closest("[data-page]");if(b)showPage(b.dataset.page);
+});
+document.getElementById("languageSelect").addEventListener("change",e=>{
+  lang=e.target.value;localStorage.setItem("medical-passport-language",lang);applyLanguage();
+});
+document.getElementById("mobileMenu").addEventListener("click",()=>document.querySelector(".nav").classList.toggle("open"));
+document.getElementById("openEdit").addEventListener("click",openEdit);
+document.getElementById("closeModal").addEventListener("click",()=>document.getElementById("modal").classList.remove("open"));
+document.getElementById("saveProfile").addEventListener("click",save);
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")e.currentTarget.classList.remove("open")});
+document.getElementById("personal").addEventListener("change",e=>{
+  const ids={nameInput:"name",englishInput:"english",dobInput:"dob",bloodInput:"blood",heightInput:"height",weightInput:"weight",nationalityInput:"nationality",locationInput:"location",emergencyNameInput:"emergencyName",emergencyPhoneInput:"emergencyPhone",notesInput:"notes"};
+  if(ids[e.target.id]){data[ids[e.target.id]]=e.target.value;localStorage.setItem("medical-passport-profile",JSON.stringify(data));render()}
+});
+applyLanguage();render();
+
+/* 動態病例紀錄：所有資料只儲存在本機瀏覽器 */
+const recordStoreKey="medical-passport-records-v1";
+let records=JSON.parse(localStorage.getItem(recordStoreKey)||'{"vaccines":[],"tests":[],"notes":[]}');
+let editingRecord=null;
+
+function saveRecords(){localStorage.setItem(recordStoreKey,JSON.stringify(records));}
+function recordLabels(type){
+  const t=T[lang]||T.en;
+  return {
+    vaccines:{title:t.addVaccine||t.add+" "+(t.vaccineSub||"Vaccine"), fields:[["name",t.recordName],["date",t.recordDate],["dose",t.recordDose],["note",t.recordNote]]},
+    tests:{title:t.addTest||t.add+" "+(t.testSub||"Test"), fields:[["name",t.recordName],["date",t.recordDate],["note",t.recordNote]]},
+    notes:{title:t.addNote||t.add+" "+(t.notes||"Note"), fields:[["name",t.recordName],["date",t.recordDate],["note",t.recordNote]]}
+  }[type];
+}
+function renderRecords(){
+  const t=T[lang]||T.en;
+  ["vaccines","tests","notes"].forEach(type=>{
+    const box=document.getElementById("records-"+type); if(!box)return;
+    const rows=records[type]||[];
+    box.innerHTML=rows.length?rows.map((r,i)=>`
+      <div class="record-row">
+        <div class="record-main">
+          <div class="record-title">${escapeHtml(r.name||"—")}</div>
+          <div class="record-meta">${r.date?escapeHtml(r.date)+"　":""}${r.dose?escapeHtml(r.dose)+"　":""}${r.note?escapeHtml(r.note):""}</div>
+        </div>
+        <div class="record-actions">
+          <button type="button" data-edit-record="${type}" data-index="${i}">${escapeHtml(t.editRecord||"Edit")}</button>
+          <button type="button" data-delete-record="${type}" data-index="${i}">${escapeHtml(t.deleteRecord||"Delete")}</button>
+        </div>
+      </div>`).join("")
+      : `<div class="empty-records">${escapeHtml(t.noRecords||"No records yet")}</div>`;
+  });
+}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function openRecordModal(type,index=null){
+  const t=T[lang]||T.en, meta=recordLabels(type), r=index===null?{}:(records[type]||[])[index]||{};
+  editingRecord={type,index};
+  const modal=document.getElementById("recordModal");
+  document.getElementById("recordModalTitle").textContent=index===null?meta.title:(t.editRecord||"Edit");
+  const form=document.getElementById("recordForm");
+  form.innerHTML=meta.fields.map(([key,label])=>{
+    const tag=key==="note"?"textarea":"input";
+    const typeAttr=key==="date"?' type="date"':'';
+    return `<div><label>${escapeHtml(label)}</label><${tag}${typeAttr} name="${key}" value="${tag==="input"?escapeHtml(r[key]||""):""}">${tag==="textarea"?escapeHtml(r[key]||""):""}</${tag}></div>`;
+  }).join("");
+  document.getElementById("recordSaveBtn").textContent=t.recordSave||"Save";
+  document.getElementById("recordCancelBtn").textContent=t.recordCancel||"Cancel";
+  modal.classList.add("show");
+  const first=form.querySelector("input,textarea"); if(first)first.focus();
+}
+function closeRecordModal(){document.getElementById("recordModal").classList.remove("show");editingRecord=null;}
+document.addEventListener("click",e=>{
+  const add=e.target.closest("[data-add-record]"); if(add){openRecordModal(add.dataset.addRecord);return;}
+  const edit=e.target.closest("[data-edit-record]"); if(edit){openRecordModal(edit.dataset.editRecord,Number(edit.dataset.index));return;}
+  const del=e.target.closest("[data-delete-record]"); if(del){
+    if(confirm((T[lang]||T.en).deleteRecord||"Delete?")){records[del.dataset.deleteRecord].splice(Number(del.dataset.index),1);saveRecords();renderRecords();}
+  }
+});
+document.getElementById("recordCancelBtn").addEventListener("click",closeRecordModal);
+document.getElementById("recordModal").addEventListener("click",e=>{if(e.target.id==="recordModal")closeRecordModal();});
+document.getElementById("recordForm").addEventListener("submit",e=>{
+  e.preventDefault(); if(!editingRecord)return;
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  const {type,index}=editingRecord;
+  if(index===null)records[type].push(data);else records[type][index]=data;
+  saveRecords();renderRecords();closeRecordModal();
+});
+renderRecords();
+
+</script>
+
+<div class="record-modal" id="recordModal" role="dialog" aria-modal="true">
+  <div class="record-dialog">
+    <h3 id="recordModalTitle">新增</h3>
+    <form class="record-form" id="recordForm"></form>
+    <div class="record-dialog-actions">
+      <button type="button" class="record-cancel" id="recordCancelBtn">取消</button>
+      <button type="submit" form="recordForm" class="record-save" id="recordSaveBtn">儲存</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
