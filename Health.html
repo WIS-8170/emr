@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2563eb">
+<title>My Medical Passport｜隨身醫療護照</title>
+<style>
+  :root{
+    --blue:#2563eb;
+    --blue-dark:#1e3a8a;
+    --blue-soft:#eff6ff;
+    --gray-50:#f8fafc;
+    --gray-100:#f1f5f9;
+    --gray-200:#e2e8f0;
+    --gray-400:#94a3b8;
+    --gray-500:#64748b;
+    --gray-700:#334155;
+    --gray-900:#0f172a;
+    --white:#fff;
+    --danger:#dc2626;
+    --success:#059669;
+    --shadow:0 12px 35px rgba(15,23,42,.08);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
+      "Noto Sans TC","Noto Sans JP","Noto Sans KR",sans-serif;
+    background:linear-gradient(180deg,#f8fbff 0%,#f8fafc 48%,#eef3f9 100%);
+    color:var(--gray-900);
+    line-height:1.6;
+  }
+  button,input,select,textarea{font:inherit}
+  button{cursor:pointer}
+  .app{display:flex;min-height:100vh}
+  .sidebar{
+    width:270px;background:rgba(255,255,255,.92);border-right:1px solid var(--gray-200);
+    padding:24px 18px;position:fixed;inset:0 auto 0 0;z-index:20;backdrop-filter:blur(16px);
+    display:flex;flex-direction:column;
+  }
+  .brand{display:flex;gap:12px;align-items:center;padding:6px 8px 26px}
+  .brand-icon{
+    width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+    color:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 8px 20px rgba(37,99,235,.25)
+  }
+  .brand h1{font-size:16px;margin:0;font-weight:800}
+  .brand p{margin:2px 0 0;color:var(--gray-500);font-size:11px}
+  .nav{display:grid;gap:7px}
+  .nav button{
+    border:0;background:transparent;color:var(--gray-700);padding:12px 13px;border-radius:12px;
+    text-align:left;display:flex;align-items:center;gap:11px;font-weight:650
+  }
+  .nav button:hover,.nav button.active{background:var(--blue-soft);color:var(--blue)}
+  .nav-icon{width:22px;text-align:center}
+  .sidebar-bottom{margin-top:auto;display:grid;gap:10px}
+  .privacy-note{font-size:11px;color:var(--gray-500);background:var(--gray-50);padding:12px;border-radius:12px}
+  .main{margin-left:270px;width:calc(100% - 270px);padding:26px 34px 60px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+  .breadcrumb{color:var(--gray-500);font-size:13px}
+  .actions{display:flex;gap:9px;align-items:center}
+  .select,.btn{
+    border:1px solid var(--gray-200);background:#fff;color:var(--gray-700);border-radius:12px;
+    padding:9px 13px;box-shadow:0 2px 8px rgba(15,23,42,.03)
+  }
+  .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .btn.primary:hover{background:#1d4ed8}
+  .btn.danger{color:var(--danger)}
+  .hero{
+    background:linear-gradient(135deg,#0f2f72 0%,#2563eb 58%,#60a5fa 100%);
+    color:#fff;border-radius:26px;padding:28px;box-shadow:0 18px 40px rgba(30,64,175,.22);
+    position:relative;overflow:hidden
+  }
+  .hero:after{
+    content:"";position:absolute;width:260px;height:260px;border-radius:50%;
+    background:rgba(255,255,255,.09);right:-80px;top:-100px
+  }
+  .hero-content{position:relative;z-index:1;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+  .profile{display:flex;gap:18px;align-items:center}
+  .avatar{
+    width:72px;height:72px;border-radius:22px;background:rgba(255,255,255,.18);
+    display:grid;place-items:center;font-size:29px;font-weight:800;border:1px solid rgba(255,255,255,.25)
+  }
+  .hero h2{margin:0 0 2px;font-size:25px}
+  .hero p{margin:0;color:#dbeafe}
+  .quick-info{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);font-size:12px}
+  .edit-btn{background:#fff;color:var(--blue);border:0;border-radius:11px;padding:10px 14px;font-weight:750}
+  .alert{
+    margin-top:18px;background:#fff;color:var(--gray-900);border-radius:16px;padding:14px 16px;
+    display:flex;gap:12px;align-items:flex-start
+  }
+  .alert-icon{font-size:20px}.alert strong{display:block;font-size:13px}.alert span{font-size:12px;color:var(--gray-500)}
+  .section{display:none;margin-top:24px}
+  .section.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}
+  .section-head h3{margin:0;font-size:20px}
+  .section-head p{margin:2px 0 0;color:var(--gray-500);font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .card{
+    background:rgba(255,255,255,.92);border:1px solid var(--gray-200);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow)
+  }
+  .card.full{grid-column:1/-1}
+  .card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .card-title h4{margin:0;font-size:15px}.card-title .icon{font-size:20px}
+  .label{font-size:11px;color:var(--gray-500);margin-bottom:4px}
+  .value{font-weight:700;color:var(--gray-900);word-break:break-word}
+  .muted{color:var(--gray-500);font-size:12px}
+  .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+  .item{
+    padding:13px;border:1px solid var(--gray-200);border-radius:14px;background:var(--gray-50);
+    display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px
+  }
+  .item:last-child{margin-bottom:0}
+  .tag{font-size:10px;padding:4px 7px;border-radius:999px;background:#dbeafe;color:#1d4ed8;white-space:nowrap}
+  .tag.green{background:#d1fae5;color:#047857}
+  .tag.red{background:#fee2e2;color:#b91c1c}
+  .empty{padding:30px;text-align:center;color:var(--gray-500);border:1px dashed var(--gray-200);border-radius:16px}
+  .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+  .field label{display:block;font-size:11px;color:var(--gray-500);margin-bottom:5px}
+  .field input,.field select,.field textarea{
+    width:100%;border:1px solid var(--gray-200);background:#fff;border-radius:11px;padding:10px 11px;
+    outline:none;color:var(--gray-900)
+  }
+  .field textarea{min-height:95px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}
+  .form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:15px}
+  .timeline{position:relative;padding-left:24px}
+  .timeline:before{content:"";position:absolute;left:7px;top:3px;bottom:3px;width:2px;background:var(--gray-200)}
+  .timeline-item{position:relative;margin-bottom:18px}
+  .timeline-dot{position:absolute;left:-22px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--blue);border:3px solid #dbeafe}
+  .timeline-date{font-size:11px;color:var(--blue);font-weight:800}
+  .timeline-title{font-weight:750}
+  .timeline-desc{font-size:12px;color:var(--gray-500)}
+  .emergency{
+    background:linear-gradient(135deg,#fff,#f8fbff);border:1px solid #bfdbfe
+  }
+  .emergency .big{font-size:24px;font-weight:850;color:var(--blue-dark)}
+  .modal-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:50;
+    align-items:center;justify-content:center;padding:20px
+  }
+  .modal-backdrop.show{display:flex}
+  .modal{
+    width:min(680px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;
+    padding:22px;box-shadow:0 30px 80px rgba(15,23,42,.28)
+  }
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .modal-head h3{margin:0}
+  .close{border:0;background:var(--gray-100);width:36px;height:36px;border-radius:10px}
+  .toast{
+    position:fixed;right:22px;bottom:22px;background:#0f172a;color:#fff;padding:11px 14px;border-radius:12px;
+    opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:80;font-size:13px
+  }
+  .toast.show{opacity:1;transform:none}
+  .footer{text-align:center;color:var(--gray-400);font-size:11px;margin-top:30px}
+  @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:780px){
+    .sidebar{width:78px;padding:18px 10px}.brand{justify-content:center;padding-bottom:20px}.brand-text,.nav-text,.privacy-note,.sidebar-bottom .btn span{display:none}
+    .brand-icon{width:44px}.nav button{justify-content:center}.main{margin-left:78px;width:calc(100% - 78px);padding:18px 14px 45px}
+    .hero-content{display:block}.hero-actions{margin-top:16px}.grid,.form-grid{grid-template-columns:1fr}.card.full{grid-column:auto}
+  }
+  @media(max-width:560px){
+    .topbar{align-items:flex-start}.actions .btn{display:none}.select{max-width:125px}
+    .hero{padding:21px}.profile{align-items:flex-start}.avatar{width:58px;height:58px;border-radius:17px}
+    .hero h2{font-size:21px}.row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">✚</div>
+      <div class="brand-text"><h1 data-i18n="appName">My Medical Passport</h1><p data-i18n="appSubtitle">Personal Health Record</p></div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="active" data-section="dashboard"><span class="nav-icon">⌂</span><span class="nav-text" data-i18n="nav.dashboard">總覽</span></button>
+      <button data-section="personal"><span class="nav-icon">👤</span><span class="nav-text" data-i18n="nav.personal">個人資料</span></button>
+      <button data-section="history"><span class="nav-icon">🩺</span><span class="nav-text" data-i18n="nav.history">疾病史</span></button>
+      <button data-section="medications"><span class="nav-icon">💊</span><span class="nav-text" data-i18n="nav.medications">用藥史</span></button>
+      <button data-section="surgeries"><span class="nav-icon">🏥</span><span class="nav-text" data-i18n="nav.surgeries">手術／住院</span></button>
+      <button data-section="family"><span class="nav-icon">👨‍👩‍👧</span><span class="nav-text" data-i18n="nav.family">家族史</span></button>
+      <button data-section="vaccines"><span class="nav-icon">💉</span><span class="nav-text" data-i18n="nav.vaccines">疫苗</span></button>
+      <button data-section="tests"><span class="nav-icon">🧪</span><span class="nav-text" data-i18n="nav.tests">檢查紀錄</span></button>
+      <button data-section="documents"><span class="nav-icon">📄</span><span class="nav-text" data-i18n="nav.documents">醫療文件</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="btn" id="printBtn">🖨️ <span data-i18n="print">列印／PDF</span></button>
+      <div class="privacy-note">🔒 <span data-i18n="privacyNote">此靜態版本資料只存在本機瀏覽器，不會自動上傳伺服器。</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="breadcrumb"><span data-i18n="breadcrumb">Medical Passport</span> / <span id="pageName">總覽</span></div>
+      <div class="actions">
+        <button class="btn" id="exportBtn">⇩ <span data-i18n="export">匯出資料</span></button>
+        <select class="select" id="language">
+          <option value="zh-TW">繁體中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+        </select>
+      </div>
+    </div>
+
+    <section class="section active" id="dashboard">
+      <div class="hero">
+        <div class="hero-content">
+          <div>
+            <div class="profile">
+              <div class="avatar">吳</div>
+              <div>
+                <h2 id="heroName">吳○○</h2>
+                <p id="heroMeta">2011/07/18 · A 型 · 中華民國</p>
+                <div class="quick-info">
+                  <span class="chip">🌐 中文 / English / 日本語 / 한국어</span>
+                  <span class="chip" data-i18n="demoBadge">示範資料</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-actions"><button class="edit-btn" id="editProfileBtn" data-i18n="editProfile">編輯個人資料</button></div>
+        </div>
+        <div class="alert">
+          <div class="alert-icon">⚠️</div>
+          <div><strong data-i18n="allergyAlert">過敏與重要醫療警示</strong><span id="allergyText">目前沒有已知藥物過敏</span></div>
+        </div>
+      </div>
+
+      <div class="section-head" style="margin-top:24px">
+        <div><h3 data-i18n="quickAccess">快速查看</h3><p data-i18n="quickAccessDesc">在就醫或旅行時快速找到重要資訊</p></div>
+      </div>
+      <div class="grid">
+        <div class="card"><div class="card-title"><h4 data-i18n="card.conditions">目前疾病</h4><span class="icon">🩺</span></div><div class="value" id="conditionCount">2</div><div class="muted" data-i18n="records">筆紀錄</div></div>
+        <div class="card"><div class="card-title"><h4 data-i18n="card.meds">目前用藥</h4><span class="icon">💊</span></div><div class="value" id="medCount">2</div><div class="muted" data-i18n="records">筆紀錄</div></div>
+        <div class="card"><div class="card-title"><h4 data-i18n="card.surgeries">手術／住院</h4><span class="icon">🏥</span></div><div class="value">1</div><div class="muted" data-i18n="records">筆紀錄</div></div>
+        <div class="card emergency"><div class="card-title"><h4 data-i18n="emergency">緊急聯絡</h4><span class="icon">🚨</span></div><div class="big">0972015468</div><div class="muted" data-i18n="emergencyContact">緊急聯絡人：家人</div></div>
+        <div class="card full"><div class="card-title"><h4 data-i18n="recent">最近更新</h4><span class="icon">🕒</span></div>
+          <div class="timeline">
+            <div class="timeline-item"><span class="timeline-dot"></span><div class="timeline-date">2026/08/01</div><div class="timeline-title" data-i18n="timeline.med">更新目前用藥</div><div class="timeline-desc" data-i18n="timeline.medDesc">示範紀錄：Medication A / Medication B</div></div>
+            <div class="timeline-item"><span class="timeline-dot"></span><div class="timeline-date">2026/07/15</div><div class="timeline-title" data-i18n="timeline.vax">新增疫苗紀錄</div><div class="timeline-desc" data-i18n="timeline.vaxDesc">示範紀錄</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="personal">
+      <div class="section-head"><div><h3 data-i18n="personal.title">個人資料</h3><p data-i18n="personal.desc">就醫時最基本且重要的身分資訊</p></div></div>
+      <div class="card">
+        <div class="form-grid">
+          <div class="field"><label data-i18n="fields.fullName">姓名</label><input id="fullName" value="吳苡嫙"></div>
+          <div class="field"><label data-i18n="fields.englishName">英文姓名</label><input id="englishName" value="WU I Hsuan"></div>
+          <div class="field"><label data-i18n="fields.dob">出生日期</label><input id="dob" type="date"></div>
+          <div class="field"><label data-i18n="fields.blood">血型</label><select id="blood"><option>O</option><option>A</option><option>B</option><option>AB</option><option>不確定</option></select></div>
+          <div class="field"><label data-i18n="fields.nationality">國籍</label><input id="nationality" value="中華民國"></div>
+          <div class="field"><label data-i18n="fields.phone">電話</label><input id="phone" value="0972015468"></div>
+          <div class="field"><label data-i18n="fields.email">Email</label><input id="email" value="example@email.com"></div>
+          <div class="field"><label data-i18n="fields.emergencyName">緊急聯絡人</label><input id="emergencyName" value="媽媽"></div>
+          <div class="field"><label data-i18n="fields.emergencyPhone">緊急聯絡電話</label><input id="emergencyPhone" value="0972015468"></div>
+          <div class="field"><label data-i18n="fields.address">居住地區</label><input id="address" value="台灣"></div><div class="field"><label>身高</label><input id="height" value="169 cm"></div><div class="field"><label>體重</label><input id="weight" value="57 kg"></div>
+          <div class="field"><label data-i18n="fields.notes">其他備註</label><textarea id="personalNotes">這是一份前端靜態示範病例，請替換成自己的資料。</textarea></div>
+        </div>
+        <div class="form-actions"><button class="btn primary" id="saveProfileBtn" data-i18n="save">儲存變更</button></div>
+      </div>
+    </section>
+
+    <section class="section" id="history">
+      <div class="section-head"><div><h3 data-i18n="history.title">疾病史</h3><p data-i18n="history.desc">目前與過去曾被診斷的疾病</p></div><button class="btn primary" data-add="condition" data-i18n="add">＋ 新增</button></div>
+      <div class="card" id="conditionsList"></div>
+    </section>
+
+    <section class="section" id="medications">
+      <div class="section-head"><div><h3 data-i18n="medications.title">用藥史</h3><p data-i18n="medications.desc">目前使用與過去使用過的藥物</p></div><button class="btn primary" data-add="medication" data-i18n="add">＋ 新增</button></div>
+      <div class="card" id="medicationsList"></div>
+    </section>
+
+    <section class="section" id="surgeries">
+      <div class="section-head"><div><h3 data-i18n="surgeries.title">手術／住院史</h3><p data-i18n="surgeries.desc">手術、住院與重要醫療處置</p></div><button class="btn primary" data-add="surgery" data-i18n="add">＋ 新增</button></div>
+      <div class="card">
+        <div class="item"><div><div class="value" data-i18n="sample.surgery">闌尾切除術</div><div class="muted">2024/05/20 · Taipei Hospital</div></div><span class="tag" data-i18n="completed">已完成</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="family">
+      <div class="section-head"><div><h3 data-i18n="family.title">家族病史</h3><p data-i18n="family.desc">記錄直系親屬與重要家族疾病</p></div><button class="btn primary" data-add="family" data-i18n="add">＋ 新增</button></div>
+      <div class="card">
+        <div class="item"><div><div class="value" data-i18n="sample.family1">父親 · 高血壓</div><div class="muted" data-i18n="sample.familyDesc">已知家族病史</div></div><span class="tag">Family</span></div>
+        <div class="item"><div><div class="value" data-i18n="sample.family2">祖母 · 糖尿病</div><div class="muted" data-i18n="sample.familyDesc">已知家族病史</div></div><span class="tag">Family</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="vaccines">
+      <div class="section-head"><div><h3 data-i18n="vaccines.title">疫苗紀錄</h3><p data-i18n="vaccines.desc">疫苗名稱、日期與劑次</p></div><button class="btn primary" data-add="vaccine" data-i18n="add">＋ 新增</button></div>
+      <div class="card">
+        <div class="item"><div><div class="value">COVID-19</div><div class="muted">2026/07/15 · Dose 4</div></div><span class="tag green" data-i18n="completed">已完成</span></div>
+        <div class="item"><div><div class="value">Influenza</div><div class="muted">2025/10/08 · Annual</div></div><span class="tag green" data-i18n="completed">已完成</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="tests">
+      <div class="section-head"><div><h3 data-i18n="tests.title">檢查紀錄</h3><p data-i18n="tests.desc">血液、影像、心電圖與其他檢查</p></div><button class="btn primary" data-add="test" data-i18n="add">＋ 新增</button></div>
+      <div class="card">
+        <div class="item"><div><div class="value" data-i18n="sample.test">一般健康檢查</div><div class="muted">2026/06/18 · Blood / Urine</div></div><span class="tag" data-i18n="viewReport">查看摘要</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="documents">
+      <div class="section-head"><div><h3 data-i18n="documents.title">醫療文件</h3><p data-i18n="documents.desc">可在此管理檢查報告、診斷證明等文件索引</p></div></div>
+      <div class="card">
+        <div class="empty">
+          <div style="font-size:34px;margin-bottom:8px">📄</div>
+          <strong data-i18n="documents.empty">尚未加入文件</strong>
+          <div class="muted" data-i18n="documents.emptyDesc">這個純 HTML 版本不會將檔案上傳到伺服器；你可以之後再接上安全的雲端儲存。</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">My Medical Passport · Static HTML / CSS / JavaScript · <span data-i18n="footer">示範用途，正式使用前請加入適當的資安與醫療資料保護機制。</span></div>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">新增紀錄</h3><button class="close" id="closeModal">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label id="mLabel1">名稱</label><input id="mInput1"></div>
+      <div class="field"><label id="mLabel2">日期</label><input id="mInput2" type="date"></div>
+      <div class="field" style="grid-column:1/-1"><label id="mLabel3">備註</label><textarea id="mInput3"></textarea></div>
+    </div>
+    <div class="form-actions"><button class="btn" id="cancelModal" data-i18n="cancel">取消</button><button class="btn primary" id="saveModal" data-i18n="save">儲存</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const translations = {
+  "zh-TW":{
+    appName:"My Medical Passport",appSubtitle:"Personal Health Record",print:"列印／PDF",export:"匯出資料",
+    breadcrumb:"Medical Passport",demoBadge:"示範資料",editProfile:"編輯個人資料",allergyAlert:"過敏與重要醫療警示",
+    allergyText:"目前沒有已知藥物過敏",quickAccess:"快速查看",quickAccessDesc:"在就醫或旅行時快速找到重要資訊",records:"筆紀錄",
+    emergency:"緊急聯絡",emergencyContact:"緊急聯絡人：家人",recent:"最近更新",completed:"已完成",add:"＋ 新增",save:"儲存變更",cancel:"取消",
+    viewReport:"查看摘要",privacyNote:"此靜態版本資料只存在本機瀏覽器，不會自動上傳伺服器。",
+    "nav.dashboard":"總覽","nav.personal":"個人資料","nav.history":"疾病史","nav.medications":"用藥史","nav.surgeries":"手術／住院","nav.family":"家族史","nav.vaccines":"疫苗","nav.tests":"檢查紀錄","nav.documents":"醫療文件",
+    "card.conditions":"目前疾病","card.meds":"目前用藥","card.surgeries":"手術／住院",
+    "timeline.med":"更新目前用藥","timeline.medDesc":"示範紀錄：Medication A / Medication B","timeline.vax":"新增疫苗紀錄","timeline.vaxDesc":"示範紀錄",
+    "personal.title":"個人資料","personal.desc":"就醫時最基本且重要的身分資訊","fields.fullName":"姓名","fields.englishName":"英文姓名","fields.dob":"出生日期","fields.blood":"血型","fields.nationality":"國籍","fields.phone":"電話","fields.email":"Email","fields.emergencyName":"緊急聯絡人","fields.emergencyPhone":"緊急聯絡電話","fields.address":"居住地區","fields.notes":"其他備註",
+    "history.title":"疾病史","history.desc":"目前與過去曾被診斷的疾病","medications.title":"用藥史","medications.desc":"目前使用與過去使用過的藥物",
+    "surgeries.title":"手術／住院史","surgeries.desc":"手術、住院與重要醫療處置","family.title":"家族病史","family.desc":"記錄直系親屬與重要家族疾病",
+    "vaccines.title":"疫苗紀錄","vaccines.desc":"疫苗名稱、日期與劑次","tests.title":"檢查紀錄","tests.desc":"血液、影像、心電圖與其他檢查",
+    "documents.title":"醫療文件","documents.desc":"可在此管理檢查報告、診斷證明等文件索引","documents.empty":"尚未加入文件","documents.emptyDesc":"這個純 HTML 版本不會將檔案上傳到伺服器；你可以之後再接上安全的雲端儲存。",
+    "footer":"示範用途，正式使用前請加入適當的資安與醫療資料保護機制。","sample.surgery":"闌尾切除術","sample.family1":"父親 · 高血壓","sample.family2":"祖母 · 糖尿病","sample.familyDesc":"已知家族病史","sample.test":"一般健康檢查",
+    "modal.condition":"新增疾病","modal.medication":"新增用藥","modal.surgery":"新增手術／住院","modal.family":"新增家族病史","modal.vaccine":"新增疫苗","modal.test":"新增檢查",
+    "toast.saved":"已儲存到本機瀏覽器","toast.exported":"資料已匯出 JSON","toast.added":"紀錄已新增（示範）"
+  },
+  en:{
+    appName:"My Medical Passport",appSubtitle:"Personal Health Record",print:"Print / PDF",export:"Export Data",breadcrumb:"Medical Passport",demoBadge:"Demo Data",editProfile:"Edit Profile",allergyAlert:"Allergies & Medical Alerts",allergyText:"No known drug allergies (demo data)",quickAccess:"Quick Access",quickAccessDesc:"Find important information quickly during travel or medical visits",records:"records",emergency:"Emergency Contact",emergencyContact:"Emergency contact: Family",recent:"Recent Updates",completed:"Completed",add:"+ Add",save:"Save Changes",cancel:"Cancel",viewReport:"View Summary",privacyNote:"In this static version, data stays in your browser and is not automatically uploaded.",
+    "nav.dashboard":"Overview","nav.personal":"Personal","nav.history":"Medical History","nav.medications":"Medications","nav.surgeries":"Surgery / Hospital","nav.family":"Family History","nav.vaccines":"Vaccinations","nav.tests":"Tests","nav.documents":"Documents",
+    "card.conditions":"Current Conditions","card.meds":"Current Medications","card.surgeries":"Surgery / Hospital","timeline.med":"Updated medications","timeline.medDesc":"Demo record: Medication A / Medication B","timeline.vax":"Added vaccination record","timeline.vaxDesc":"Demo record",
+    "personal.title":"Personal Information","personal.desc":"Essential identity information for medical visits","fields.fullName":"Full Name","fields.englishName":"English Name","fields.dob":"Date of Birth","fields.blood":"Blood Type","fields.nationality":"Nationality","fields.phone":"Phone","fields.email":"Email","fields.emergencyName":"Emergency Contact","fields.emergencyPhone":"Emergency Phone","fields.address":"Location","fields.notes":"Notes",
+    "history.title":"Medical History","history.desc":"Current and previous diagnoses","medications.title":"Medication History","medications.desc":"Current and previous medications","surgeries.title":"Surgery / Hospital History","surgeries.desc":"Surgeries, hospitalizations and major procedures","family.title":"Family History","family.desc":"Important conditions among close relatives","vaccines.title":"Vaccination Records","vaccines.desc":"Vaccine name, date and dose","tests.title":"Test Records","tests.desc":"Blood tests, imaging, ECG and other examinations","documents.title":"Medical Documents","documents.desc":"Manage indexes for reports, certificates and other medical files","documents.empty":"No documents yet","documents.emptyDesc":"This HTML-only version does not upload files to a server. A secure storage service can be connected later.","footer":"Demo only. Add appropriate security and medical-data protection before real-world use.","sample.surgery":"Appendectomy","sample.family1":"Father · Hypertension","sample.family2":"Grandmother · Diabetes","sample.familyDesc":"Known family history","sample.test":"General Health Check","modal.condition":"Add Condition","modal.medication":"Add Medication","modal.surgery":"Add Surgery / Hospitalization","modal.family":"Add Family History","modal.vaccine":"Add Vaccine","modal.test":"Add Test","toast.saved":"Saved to browser storage","toast.exported":"Data exported as JSON","toast.added":"Record added (demo)"
+  },
+  ja:{
+    appName:"My Medical Passport",appSubtitle:"Personal Health Record",print:"印刷 / PDF",export:"データを書き出す",breadcrumb:"Medical Passport",demoBadge:"デモデータ",editProfile:"プロフィール編集",allergyAlert:"アレルギー・医療上の注意",allergyText:"既知の薬物アレルギーなし（デモ）",quickAccess:"クイックアクセス",quickAccessDesc:"受診や旅行時に重要な情報をすぐ確認",records:"件",emergency:"緊急連絡先",emergencyContact:"緊急連絡先：家族",recent:"最近の更新",completed:"完了",add:"＋ 追加",save:"変更を保存",cancel:"キャンセル",viewReport:"概要を見る",privacyNote:"この静的版ではデータはブラウザ内に保存され、自動的にサーバーへ送信されません。",
+    "nav.dashboard":"概要","nav.personal":"個人情報","nav.history":"既往歴","nav.medications":"服薬歴","nav.surgeries":"手術・入院","nav.family":"家族歴","nav.vaccines":"予防接種","nav.tests":"検査記録","nav.documents":"医療書類",
+    "card.conditions":"現在の疾患","card.meds":"現在の薬","card.surgeries":"手術・入院","timeline.med":"服薬情報を更新","timeline.medDesc":"デモ記録：Medication A / Medication B","timeline.vax":"予防接種記録を追加","timeline.vaxDesc":"デモ記録",
+    "personal.title":"個人情報","personal.desc":"受診時に必要な基本情報","fields.fullName":"氏名","fields.englishName":"英語氏名","fields.dob":"生年月日","fields.blood":"血液型","fields.nationality":"国籍","fields.phone":"電話番号","fields.email":"メール","fields.emergencyName":"緊急連絡先","fields.emergencyPhone":"緊急電話番号","fields.address":"居住地","fields.notes":"備考",
+    "history.title":"既往歴","history.desc":"現在および過去に診断された疾患","medications.title":"服薬歴","medications.desc":"現在・過去に使用した薬","surgeries.title":"手術・入院歴","surgeries.desc":"手術、入院、重要な処置","family.title":"家族歴","family.desc":"近親者の重要な疾患","vaccines.title":"予防接種","vaccines.desc":"ワクチン名、日付、接種回数","tests.title":"検査記録","tests.desc":"血液検査、画像、心電図など","documents.title":"医療書類","documents.desc":"検査報告書や診断書などの管理","documents.empty":"書類はありません","documents.emptyDesc":"このHTML版ではファイルをサーバーへアップロードしません。後から安全なストレージを接続できます。","footer":"デモ用途です。実運用前に適切なセキュリティと医療データ保護を追加してください。","sample.surgery":"虫垂切除術","sample.family1":"父 · 高血圧","sample.family2":"祖母 · 糖尿病","sample.familyDesc":"既知の家族歴","sample.test":"一般健康診断","modal.condition":"疾患を追加","modal.medication":"薬を追加","modal.surgery":"手術・入院を追加","modal.family":"家族歴を追加","modal.vaccine":"ワクチンを追加","modal.test":"検査を追加","toast.saved":"ブラウザに保存しました","toast.exported":"JSONを書き出しました","toast.added":"記録を追加しました（デモ）"
+  },
+  ko:{
+    appName:"My Medical Passport",appSubtitle:"Personal Health Record",print:"인쇄 / PDF",export:"데이터 내보내기",breadcrumb:"Medical Passport",demoBadge:"데모 데이터",editProfile:"프로필 편집",allergyAlert:"알레르기 및 의료 주의사항",allergyText:"알려진 약물 알레르기 없음 (데모)",quickAccess:"빠른 보기",quickAccessDesc:"진료나 여행 중 중요한 정보를 빠르게 확인",records:"건",emergency:"긴급 연락처",emergencyContact:"긴급 연락처: 가족",recent:"최근 업데이트",completed:"완료",add:"＋ 추가",save:"변경 저장",cancel:"취소",viewReport:"요약 보기",privacyNote:"이 정적 버전에서는 데이터가 브라우저에만 저장되며 자동으로 서버에 업로드되지 않습니다.",
+    "nav.dashboard":"개요","nav.personal":"개인 정보","nav.history":"질병력","nav.medications":"복약 기록","nav.surgeries":"수술 / 입원","nav.family":"가족력","nav.vaccines":"예방접종","nav.tests":"검사 기록","nav.documents":"의료 문서",
+    "card.conditions":"현재 질환","card.meds":"현재 복용약","card.surgeries":"수술 / 입원","timeline.med":"복약 정보 업데이트","timeline.medDesc":"데모 기록: Medication A / Medication B","timeline.vax":"예방접종 기록 추가","timeline.vaxDesc":"데모 기록",
+    "personal.title":"개인 정보","personal.desc":"진료에 필요한 기본 신원 정보","fields.fullName":"이름","fields.englishName":"영문 이름","fields.dob":"생년월일","fields.blood":"혈액형","fields.nationality":"국적","fields.phone":"전화번호","fields.email":"이메일","fields.emergencyName":"긴급 연락처","fields.emergencyPhone":"긴급 전화번호","fields.address":"거주 지역","fields.notes":"메모",
+    "history.title":"질병력","history.desc":"현재 및 과거 진단 질환","medications.title":"복약 기록","medications.desc":"현재 및 과거 복용 약물","surgeries.title":"수술 / 입원 기록","surgeries.desc":"수술, 입원 및 주요 의료 처치","family.title":"가족력","family.desc":"가까운 가족의 주요 질환","vaccines.title":"예방접종 기록","vaccines.desc":"백신명, 날짜 및 접종 횟수","tests.title":"검사 기록","tests.desc":"혈액검사, 영상, 심전도 및 기타 검사","documents.title":"의료 문서","documents.desc":"검사 결과, 진단서 등의 문서 색인 관리","documents.empty":"문서가 없습니다","documents.emptyDesc":"이 HTML 전용 버전은 파일을 서버에 업로드하지 않습니다. 추후 안전한 저장소를 연결할 수 있습니다.","footer":"데모용입니다. 실제 사용 전 적절한 보안 및 의료 데이터 보호 기능을 추가하세요。","sample.surgery":"충수절제술","sample.family1":"아버지 · 고혈압","sample.family2":"할머니 · 당뇨병","sample.familyDesc":"확인된 가족력","sample.test":"일반 건강검진","modal.condition":"질환 추가","modal.medication":"약물 추가","modal.surgery":"수술 / 입원 추가","modal.family":"가족력 추가","modal.vaccine":"예방접종 추가","modal.test":"검사 추가","toast.saved":"브라우저에 저장했습니다","toast.exported":"JSON으로 내보냈습니다","toast.added":"기록을 추가했습니다 (데모)"
+  }
+};
+
+let lang = localStorage.getItem("mmp-lang") || "zh-TW";
+const state = {
+  profile: JSON.parse(localStorage.getItem("mmp-profile") || "null") || {
+    fullName:"吳苡嫙", englishName:"WU I Hsuan", dob:"2011-07-18", blood:"A", nationality:"中華民國",
+    phone:"", email:"", emergencyName:"媽媽", emergencyPhone:"0972015468", address:"台灣",
+    notes:"體重：57 kg；身高：169 cm。藥物過敏：無；食物過敏：無；其他過敏：無。疾病史：無；目前固定用藥：無；過去用藥史：無；手術史：無；住院史：無；家族病史：無。"
+  },
+  conditions: JSON.parse(localStorage.getItem("mmp-conditions") || "null") || [
+    {name:"Hypertension",date:"2025-04-12",note:"Demo record"}
+  ],
+  medications: JSON.parse(localStorage.getItem("mmp-medications") || "null") || [
+    {name:"Medication A",date:"2026-08-01",note:"1 tablet / daily"},
+    {name:"Medication B",date:"2026-08-01",note:"As needed"}
+  ]
+};
+
+function t(key){return (translations[lang] && translations[lang][key]) || translations["en"][key] || key}
+function applyI18n(){
+  document.documentElement.lang = lang === "zh-TW" ? "zh-Hant" : lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  document.getElementById("language").value = lang;
+  const active = document.querySelector(".nav button.active");
+  if(active) document.getElementById("pageName").textContent = active.querySelector(".nav-text").textContent;
+  document.getElementById("allergyText").textContent = t("allergyText");
+  renderLists();
+}
+function renderLists(){
+  const cl = document.getElementById("conditionsList");
+  cl.innerHTML = state.conditions.length ? state.conditions.map(x =>
+    `<div class="item"><div><div class="value">${escapeHtml(x.name)}</div><div class="muted">${escapeHtml(x.date||"—")} · ${escapeHtml(x.note||"")}</div></div><span class="tag">${t("card.conditions")}</span></div>`
+  ).join("") : `<div class="empty">${t("documents.empty")}</div>`;
+  const ml = document.getElementById("medicationsList");
+  ml.innerHTML = state.medications.length ? state.medications.map(x =>
+    `<div class="item"><div><div class="value">${escapeHtml(x.name)}</div><div class="muted">${escapeHtml(x.date||"—")} · ${escapeHtml(x.note||"")}</div></div><span class="tag green">${t("completed")}</span></div>`
+  ).join("") : `<div class="empty">${t("documents.empty")}</div>`;
+  document.getElementById("conditionCount").textContent = state.conditions.length;
+  document.getElementById("medCount").textContent = state.medications.length;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function loadProfile(){
+  for(const key of Object.keys(state.profile)){
+    const el = document.getElementById(key);
+    if(el) el.value = state.profile[key];
+  }
+  document.getElementById("heroName").textContent = state.profile.fullName || "—";
+  document.getElementById("heroMeta").textContent = `${state.profile.dob || "—"} · ${state.profile.blood || "—"} · ${state.profile.nationality || "—"} · 169 cm`;
+}
+function saveProfile(){
+  for(const key of Object.keys(state.profile)){
+    const el = document.getElementById(key);
+    if(el) state.profile[key] = el.value;
+  }
+  localStorage.setItem("mmp-profile",JSON.stringify(state.profile));
+  loadProfile(); toast(t("toast.saved"));
+}
+function toast(msg){
+  const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove("show"),2200);
+}
+function openSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.section===id));
+  document.getElementById("pageName").textContent = document.querySelector(`.nav button[data-section="${id}"] .nav-text`).textContent;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("nav").addEventListener("click",e=>{
+  const btn=e.target.closest("button[data-section]"); if(btn) openSection(btn.dataset.section);
+});
+document.getElementById("language").addEventListener("change",e=>{
+  lang=e.target.value;localStorage.setItem("mmp-lang",lang);applyI18n();loadProfile();
+});
+document.getElementById("saveProfileBtn").addEventListener("click",saveProfile);
+document.getElementById("editProfileBtn").addEventListener("click",()=>openSection("personal"));
+document.getElementById("printBtn").addEventListener("click",()=>window.print());
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const payload={profile:state.profile,conditions:state.conditions,medications:state.medications,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="medical-passport-data.json";a.click();URL.revokeObjectURL(a.href);
+  toast(t("toast.exported"));
+});
+
+let modalType="";
+document.querySelectorAll("[data-add]").forEach(btn=>btn.addEventListener("click",()=>{
+  modalType=btn.dataset.add;
+  const key="modal."+modalType;
+  document.getElementById("modalTitle").textContent=t(key);
+  document.getElementById("mLabel1").textContent=modalType==="family" ? t("fields.notes") : t("fields.fullName");
+  document.getElementById("mLabel2").textContent=t("fields.dob");
+  document.getElementById("mLabel3").textContent=t("fields.notes");
+  document.getElementById("mInput1").value="";document.getElementById("mInput2").value="";document.getElementById("mInput3").value="";
+  document.getElementById("modal").classList.add("show");
+}));
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+document.getElementById("closeModal").onclick=closeModal;
+document.getElementById("cancelModal").onclick=closeModal;
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+document.getElementById("saveModal").addEventListener("click",()=>{
+  const obj={name:document.getElementById("mInput1").value.trim()||"New record",date:document.getElementById("mInput2").value,note:document.getElementById("mInput3").value.trim()};
+  if(modalType==="condition"){state.conditions.push(obj);localStorage.setItem("mmp-conditions",JSON.stringify(state.conditions));}
+  if(modalType==="medication"){state.medications.push(obj);localStorage.setItem("mmp-medications",JSON.stringify(state.medications));}
+  closeModal();renderLists();toast(t("toast.added"));
+});
+loadProfile();applyI18n();
+</script>
+</body>
+</html>
